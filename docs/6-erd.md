@@ -17,6 +17,8 @@ erDiagram
         varchar email UK "로그인 이메일"
         varchar password_hash "비밀번호 해시"
         varchar display_name "이름 또는 닉네임"
+        boolean dark_mode_enabled "다크모드 사용 여부"
+        varchar language "화면 표시 언어"
         timestamptz created_at "생성일시"
         timestamptz updated_at "수정일시"
     }
@@ -38,6 +40,7 @@ erDiagram
         text description "설명"
         date due_date "종료예정일"
         boolean is_completed "완료 여부"
+        varchar status "등록/진행중/완료/취소 상태"
         timestamptz created_at "생성일시"
         timestamptz updated_at "수정일시"
     }
@@ -74,6 +77,8 @@ erDiagram
 - `users.email`: `UNIQUE NOT NULL`
 - `users.password_hash`: `NOT NULL`
 - `users.display_name`: `NOT NULL`
+- `users.dark_mode_enabled`: `NOT NULL DEFAULT false`
+- `users.language`: `NOT NULL DEFAULT 'ko'`, `CHECK (language IN ('ko', 'en', 'ja'))`
 - `categories.name`: `NOT NULL`
 - `categories.is_default`: `NOT NULL DEFAULT false`
 - `todos.user_id`: `users.id` 참조, `ON DELETE CASCADE`
@@ -82,6 +87,8 @@ erDiagram
 - `todos.title`: `NOT NULL`
 - `todos.category_id`: `NOT NULL`
 - `todos.is_completed`: `NOT NULL DEFAULT false`
+- `todos.status`: `NOT NULL DEFAULT 'registered'`, `CHECK (status IN ('registered', 'in_progress', 'completed', 'canceled'))`
+- `todos.is_completed`는 기존 호환 필드이며 신규 상태 처리는 `todos.status`를 기준으로 한다.
 - `categories` 기본/사용자 카테고리 구분:
 
 ```sql
@@ -99,6 +106,7 @@ CHECK (
 - `todos(user_id, due_date)`
 - `todos(user_id, category_id)`
 - `todos(user_id, is_completed)`
+- `todos(user_id, status)`
 - `categories(user_id)`
 - 기본 카테고리명 중복 방지: `UNIQUE (name) WHERE is_default = true`
 - 사용자별 카테고리명 중복 방지: `UNIQUE (user_id, name) WHERE is_default = false`

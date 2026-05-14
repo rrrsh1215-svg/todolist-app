@@ -5,6 +5,8 @@ CREATE TABLE users (
     email VARCHAR(255) NOT NULL UNIQUE,
     password_hash VARCHAR(255) NOT NULL,
     display_name VARCHAR(100) NOT NULL,
+    dark_mode_enabled BOOLEAN NOT NULL DEFAULT false,
+    language VARCHAR(2) NOT NULL DEFAULT 'ko' CHECK (language IN ('ko', 'en', 'ja')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -31,6 +33,7 @@ CREATE TABLE todos (
     description TEXT,
     due_date DATE,
     is_completed BOOLEAN NOT NULL DEFAULT false,
+    status VARCHAR(20) NOT NULL DEFAULT 'registered' CHECK (status IN ('registered', 'in_progress', 'completed', 'canceled')),
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
@@ -54,6 +57,9 @@ CREATE INDEX todos_user_category_idx
 
 CREATE INDEX todos_user_completed_idx
     ON todos (user_id, is_completed);
+
+CREATE INDEX todos_user_status_idx
+    ON todos (user_id, status);
 
 CREATE INDEX categories_user_id_idx
     ON categories (user_id);

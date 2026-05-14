@@ -1,6 +1,6 @@
 <svg width="760" height="720" viewBox="0 0 760 720" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="wf004-title wf004-desc">
   <title id="wf004-title">WF-004 TodoListApp 할일 등록/수정 화면</title>
-  <desc id="wf004-desc">할일명, 설명, 종료예정일, 카테고리, 완료 여부를 입력하고 저장 또는 취소할 수 있는 화면 와이어프레임이다.</desc>
+  <desc id="wf004-desc">???, ??, ?????, ????, ??? ???? ?? ?? ??? ? ?? ?? ????????.</desc>
   <style>
     .page {
       fill: #f7f7f8;
@@ -90,10 +90,10 @@
   <rect class="button" x="532" y="494" width="82" height="40" rx="4"/>
   <text class="small" x="573" y="518" text-anchor="middle">+ 추가</text>
 
-  <text class="text" x="146" y="572">완료 여부</text>
-  <rect class="field" x="146" y="590" width="22" height="22" rx="3"/>
-  <text class="small" x="180" y="607">완료</text>
-  <text class="small" x="146" y="636">초기 등록 시 기본값은 미완료이며, 수정 시 완료 여부를 변경할 수 있다.</text>
+  <text class="text" x="146" y="572">??</text>
+  <rect class="field" x="146" y="590" width="190" height="34" rx="4"/>
+  <text class="small" x="162" y="612">?? / ??? / ?? / ??</text>
+  <text class="small" x="146" y="636">?? ?? ? ?? ??? ????, ?? ? ??? ??? ? ??.</text>
 
   <rect class="error" x="146" y="652" width="258" height="28" rx="4"/>
   <text class="small" x="160" y="671">오류: 할일명과 카테고리는 필수입니다.</text>

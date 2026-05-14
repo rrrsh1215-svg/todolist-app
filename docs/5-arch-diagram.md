@@ -1,152 +1,147 @@
-# TodoListApp 기술 아키텍처 다이어그램
+# TodoListApp 아키텍처
 
-본 문서는 `docs/2-prd.md`와 `docs/4-project-principles.md`를 바탕으로 TodoListApp MVP의 기술 아키텍처를 표현한다.
-
-## 아키텍처 개요
-
-TodoListApp은 반응형 웹 UI, Express REST API, PostgreSQL 17 데이터베이스로 구성한다. 프론트엔드는 React 19와 TypeScript를 사용하고, JWT는 Zustand store의 메모리 상태에 저장하며, 서버 상태는 TanStack Query로 관리한다. 백엔드는 Node.js와 Express 기반 REST API를 제공하며, PostgreSQL 연동은 `pg` 라이브러리를 사용한다.
-
-MVP 핵심 도메인은 `auth`, `users`, `todos`, `categories`이다.
-
-## 전체 아키텍처
+## 1. 전체 구조
 
 ```mermaid
 flowchart LR
-    actor[사용자<br/>데스크톱/모바일 브라우저]
+    Browser[Browser]
+    FE[React Frontend]
+    API[Express API Server]
+    DB[(PostgreSQL 17)]
+    Swagger[Swagger UI]
 
-    subgraph fe[Frontend - React 19 + TypeScript]
-        pages[Pages<br/>Login / Signup / TodoList / TodoForm / Profile]
-        features[Feature Modules<br/>auth / users / todos / categories]
-        components[UI Components<br/>Form / List / Filter / Dialog]
-        zustand[Zustand Store<br/>JWT memory auth state / todo filters / modal state]
-        query[TanStack Query<br/>server cache / mutations]
-        http[HTTP Client<br/>API base URL / JWT header / error handling]
-    end
-
-    subgraph be[Backend - Node.js + Express]
-        routes[Routes<br/>/auth /users/me /todos /categories]
-        middlewares[Middlewares<br/>JWT auth / validation / error handler]
-        controllers[Controllers<br/>request / response mapping]
-        services[Services<br/>business rules / ownership / transaction]
-        repositories[Repositories<br/>SQL query / row mapping]
-        pg[pg<br/>PostgreSQL driver]
-    end
-
-    subgraph db[PostgreSQL 17]
-        users[(users)]
-        todos[(todos)]
-        categories[(categories)]
-    end
-
-    actor --> pages
-    pages --> components
-    pages --> features
-    features --> zustand
-    features --> query
-    query --> http
-    http -->|REST API + JWT| routes
-
-    routes --> middlewares
-    middlewares --> controllers
-    controllers --> services
-    services --> repositories
-    repositories --> pg
-    pg --> users
-    pg --> todos
-    pg --> categories
-
-    todos -->|user_id| users
-    todos -->|category_id| categories
-    categories -->|user_id nullable| users
+    Browser --> FE
+    FE -->|REST /api| API
+    API -->|pg| DB
+    Browser -->|/api-docs| Swagger
+    Swagger --> API
 ```
 
-## 인증 및 보호 API 흐름
+## 2. 프론트엔드 구조
+
+```mermaid
+flowchart TD
+    Pages[pages]
+    Features[features]
+    Shared[shared]
+    AuthStore[Zustand authStore]
+    Query[TanStack Query]
+    Http[HTTP client]
+
+    Pages --> Features
+    Features --> Shared
+    Features --> Query
+    Shared --> Http
+    AuthStore --> Http
+```
+
+- `pages`: 라우트 단위 화면
+- `features/auth`: 인증, JWT 메모리 상태, 보호 라우트, 다크모드/언어 동기화
+- `features/todos`: Todo API, Hook, 필터 store, 목록/폼 컴포넌트
+- `features/categories`: 카테고리 API, 생성/선택 컴포넌트, 기본 카테고리 다국어 표시 유틸
+- `features/users`: 내 정보 조회/수정, 회원 탈퇴
+- `shared`: API client, route/query key 상수, i18n
+
+## 3. 백엔드 구조
+
+```mermaid
+flowchart TD
+    Routes[routes]
+    Controllers[controllers]
+    Services[services]
+    Repositories[repositories]
+    Pool[pg pool]
+    DB[(PostgreSQL)]
+
+    Routes --> Controllers
+    Controllers --> Services
+    Services --> Repositories
+    Repositories --> Pool
+    Pool --> DB
+```
+
+- `routes`: Express route binding
+- `controllers`: 요청/응답 처리와 주요 로그
+- `services`: validation, 권한 확인, 비즈니스 규칙
+- `repositories`: SQL 실행
+- `db/pool.js`: PostgreSQL connection pool
+
+## 4. 주요 API 모듈
+
+| 모듈 | 책임 | 주요 엔드포인트 |
+| --- | --- | --- |
+| Auth | 회원가입, 로그인, 로그아웃 | `POST /auth/signup`, `POST /auth/login`, `POST /auth/logout` |
+| Users | 내 정보 조회/수정, 탈퇴 | `GET /users/me`, `PATCH /users/me`, `DELETE /users/me` |
+| Categories | 카테고리 조회/생성 | `GET /categories`, `POST /categories` |
+| Todos | 할일 CRUD, 상태/필터 | `GET /todos`, `POST /todos`, `GET /todos/:id`, `PATCH /todos/:id`, `DELETE /todos/:id` |
+| System | Health, Swagger | `GET /health`, `GET /api-docs` |
+
+## 5. 상태 흐름
+
+### 인증
 
 ```mermaid
 sequenceDiagram
-    participant User as 사용자
-    participant FE as React Frontend
-    participant API as Express REST API
-    participant Auth as JWT Middleware
-    participant Service as Domain Service
-    participant DB as PostgreSQL
+    participant User
+    participant FE
+    participant API
+    participant DB
 
-    User->>FE: 이메일/비밀번호 로그인
+    User->>FE: 로그인 입력
     FE->>API: POST /auth/login
-    API->>DB: 사용자 조회 및 비밀번호 검증
-    DB-->>API: 사용자 정보
-    API-->>FE: JWT 반환
-    FE->>FE: JWT를 Zustand 메모리 상태에 저장
-
-    User->>FE: 할일 목록 조회
-    FE->>API: GET /todos<br/>Authorization: Bearer JWT
-    API->>Auth: JWT 검증
-    Auth-->>API: current_user.id 전달
-    API->>Service: 사용자 ID + 필터 조건 전달
-    Service->>DB: user_id 기준 할일 조회
-    DB-->>Service: 본인 소유 할일 목록
-    Service-->>API: 결과 반환
-    API-->>FE: Todo 목록 응답
-    FE-->>User: 목록 표시
+    API->>DB: 사용자 조회
+    API-->>FE: JWT + user
+    FE->>FE: Zustand 메모리 상태 저장
 ```
 
-## 도메인 모듈 책임
+### Todo 상태 변경
 
-| 모듈 | 주요 책임 | 주요 API |
-| --- | --- | --- |
-| `auth` | 회원가입, 로그인, 로그아웃, JWT 발급 | `POST /auth/signup`, `POST /auth/login`, `POST /auth/logout` |
-| `users` | 내 정보 조회, 이름/닉네임 수정, 회원 탈퇴 | `GET /users/me`, `PATCH /users/me`, `DELETE /users/me` |
-| `todos` | 할일 CRUD, 완료 여부 변경, 필터링 | `GET /todos`, `POST /todos`, `GET /todos/:id`, `PATCH /todos/:id`, `DELETE /todos/:id` |
-| `categories` | 기본 카테고리 조회, 사용자 추가 카테고리 생성 | `GET /categories`, `POST /categories` |
+```mermaid
+sequenceDiagram
+    participant User
+    participant FE
+    participant API
+    participant DB
 
-## 데이터 저장 구조
+    User->>FE: 편집 화면에서 상태 선택
+    FE->>API: PATCH /todos/{todoId} { status }
+    API->>DB: todos.status 업데이트
+    API-->>FE: Todo 응답
+    FE->>FE: Todo 목록/상세 query invalidate
+```
+
+## 6. 데이터 요약
 
 ```mermaid
 erDiagram
-    USERS ||--o{ TODOS : owns
-    USERS ||--o{ CATEGORIES : creates
-    CATEGORIES ||--o{ TODOS : classifies
+    users ||--o{ todos : owns
+    users ||--o{ categories : creates
+    categories ||--o{ todos : classifies
 
-    USERS {
-        uuid id PK
-        string email
-        string password_hash
-        string display_name
-        datetime created_at
-        datetime updated_at
+    users {
+        uuid id
+        varchar email
+        varchar password_hash
+        varchar display_name
+        boolean dark_mode_enabled
+        varchar language
     }
 
-    CATEGORIES {
-        uuid id PK
-        uuid user_id FK "nullable for default categories"
-        string name
-        boolean is_default
-        datetime created_at
-        datetime updated_at
-    }
-
-    TODOS {
-        uuid id PK
-        uuid user_id FK
-        uuid category_id FK
-        string title
-        string description
+    todos {
+        uuid id
+        uuid user_id
+        uuid category_id
+        varchar title
+        text description
         date due_date
+        varchar status
         boolean is_completed
-        datetime created_at
-        datetime updated_at
+    }
+
+    categories {
+        uuid id
+        uuid user_id
+        varchar name
+        boolean is_default
     }
 ```
-
-## 핵심 설계 규칙
-
-- 보호 API는 JWT 인증 미들웨어를 반드시 통과한다.
-- JWT는 프론트엔드의 Zustand store 메모리 상태에만 저장한다.
-- JWT는 `localStorage` 또는 `sessionStorage`에 저장하지 않는다.
-- Todo 조회, 수정, 삭제는 항상 `user_id` 조건으로 본인 소유 데이터만 처리한다.
-- 기본 카테고리는 `user_id = null`, `is_default = true`로 관리한다.
-- 사용자 추가 카테고리는 생성 사용자 ID를 가진다.
-- 회원 탈퇴는 사용자, 본인 소유 할일, 사용자 추가 카테고리를 트랜잭션으로 삭제한다.
-- 로그아웃은 MVP 기준으로 Zustand store의 JWT 삭제 방식으로 처리한다.
-- 서버 측 JWT 블랙리스트는 MVP 범위에서 제외한다.
-- SQL 실행은 `pg`와 파라미터 바인딩을 사용한다.

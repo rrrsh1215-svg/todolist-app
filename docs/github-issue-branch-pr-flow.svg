@@ -1,0 +1,122 @@
+<svg width="1180" height="760" viewBox="0 0 1180 760" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="flow-title flow-desc">
+  <title id="flow-title">Issue, Feature Branch, Pull Request, Main Merge Flow</title>
+  <desc id="flow-desc">task를 issue로 등록하고 feature branch에서 작업한 뒤 pull request를 생성하여 main branch 담당자가 검토 후 병합하는 흐름</desc>
+  <style>
+    .page { fill: #f8fafc; }
+    .lane { fill: #ffffff; stroke: #1f2937; stroke-width: 1.4; }
+    .lane-title { font: 700 18px Arial, sans-serif; fill: #111827; }
+    .box { fill: #ffffff; stroke: #374151; stroke-width: 1.3; }
+    .issue { fill: #eef2ff; stroke: #4f46e5; }
+    .branch { fill: #ecfdf5; stroke: #059669; }
+    .test { fill: #fffbeb; stroke: #d97706; }
+    .pr { fill: #eff6ff; stroke: #2563eb; }
+    .merge { fill: #f0fdf4; stroke: #16a34a; }
+    .note { fill: #f3f4f6; stroke: #6b7280; stroke-dasharray: 5 4; }
+    .text { font: 14px Arial, sans-serif; fill: #111827; }
+    .small { font: 12px Arial, sans-serif; fill: #374151; }
+    .title { font: 700 24px Arial, sans-serif; fill: #111827; }
+    .arrow { stroke: #374151; stroke-width: 1.8; marker-end: url(#arrowhead); fill: none; }
+    .arrow-blue { stroke: #2563eb; stroke-width: 1.8; marker-end: url(#arrowhead-blue); fill: none; }
+  </style>
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#374151"/>
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+  </defs>
+
+  <rect class="page" x="0" y="0" width="1180" height="760"/>
+  <text class="title" x="40" y="48">GitHub Issue - Feature Branch - Pull Request Flow</text>
+  <text class="small" x="40" y="74">task1, task2, task3를 issue로 등록하고, feature branch 작업 후 PR을 통해 main branch 담당자에게 병합 요청한다.</text>
+
+  <rect class="lane" x="40" y="110" width="250" height="590" rx="8"/>
+  <text class="lane-title" x="68" y="146">1. Issue Board</text>
+  <rect class="box issue" x="68" y="176" width="194" height="84" rx="6"/>
+  <text class="text" x="92" y="208">Issue #1</text>
+  <text class="small" x="92" y="230">task1</text>
+  <text class="small" x="92" y="248">label + 담당자 지정</text>
+  <rect class="box issue" x="68" y="282" width="194" height="84" rx="6"/>
+  <text class="text" x="92" y="314">Issue #2</text>
+  <text class="small" x="92" y="336">task2</text>
+  <text class="small" x="92" y="354">label + 담당자 지정</text>
+  <rect class="box issue" x="68" y="388" width="194" height="84" rx="6"/>
+  <text class="text" x="92" y="420">Issue #3</text>
+  <text class="small" x="92" y="442">task3</text>
+  <text class="small" x="92" y="460">label + 담당자 지정</text>
+  <rect class="box note" x="68" y="530" width="194" height="100" rx="6"/>
+  <text class="small" x="88" y="562">Issue마다 작업 범위,</text>
+  <text class="small" x="88" y="584">완료 조건, 담당자를</text>
+  <text class="small" x="88" y="606">명확히 기록한다.</text>
+
+  <rect class="lane" x="330" y="110" width="250" height="590" rx="8"/>
+  <text class="lane-title" x="358" y="146">2. Feature Branch</text>
+  <rect class="box branch" x="358" y="176" width="194" height="84" rx="6"/>
+  <text class="text" x="382" y="208">feature-1</text>
+  <text class="small" x="382" y="230">Issue #1의 자식 branch</text>
+  <text class="small" x="382" y="248">개발 + commit</text>
+  <rect class="box branch" x="358" y="282" width="194" height="84" rx="6"/>
+  <text class="text" x="382" y="314">feature-2</text>
+  <text class="small" x="382" y="336">Issue #2의 자식 branch</text>
+  <text class="small" x="382" y="354">개발 + commit</text>
+  <rect class="box branch" x="358" y="388" width="194" height="84" rx="6"/>
+  <text class="text" x="382" y="420">feature-3</text>
+  <text class="small" x="382" y="442">Issue #3의 자식 branch</text>
+  <text class="small" x="382" y="460">개발 + commit</text>
+  <rect class="box test" x="358" y="530" width="194" height="100" rx="6"/>
+  <text class="text" x="382" y="562">Test</text>
+  <text class="small" x="382" y="584">각 feature branch에서</text>
+  <text class="small" x="382" y="606">테스트 후 push</text>
+
+  <rect class="lane" x="620" y="110" width="250" height="590" rx="8"/>
+  <text class="lane-title" x="648" y="146">3. Pull Request Board</text>
+  <rect class="box pr" x="648" y="176" width="194" height="84" rx="6"/>
+  <text class="text" x="672" y="208">PR #1</text>
+  <text class="small" x="672" y="230">feature-1 -> main</text>
+  <text class="small" x="672" y="248">merge 요청</text>
+  <rect class="box pr" x="648" y="282" width="194" height="84" rx="6"/>
+  <text class="text" x="672" y="314">PR #2</text>
+  <text class="small" x="672" y="336">feature-2 -> main</text>
+  <text class="small" x="672" y="354">merge 요청</text>
+  <rect class="box pr" x="648" y="388" width="194" height="84" rx="6"/>
+  <text class="text" x="672" y="420">PR #3</text>
+  <text class="small" x="672" y="442">feature-3 -> main</text>
+  <text class="small" x="672" y="460">merge 요청</text>
+  <rect class="box note" x="648" y="530" width="194" height="100" rx="6"/>
+  <text class="small" x="668" y="562">PR 게시판에서</text>
+  <text class="small" x="668" y="584">변경사항, 테스트 결과,</text>
+  <text class="small" x="668" y="606">리뷰 상태를 확인한다.</text>
+
+  <rect class="lane" x="910" y="110" width="230" height="590" rx="8"/>
+  <text class="lane-title" x="938" y="146">4. Main Owner</text>
+  <rect class="box merge" x="938" y="188" width="174" height="96" rx="6"/>
+  <text class="text" x="964" y="220">Review PR</text>
+  <text class="small" x="964" y="242">main branch 담당자</text>
+  <text class="small" x="964" y="262">코드/테스트 검토</text>
+  <rect class="box merge" x="938" y="330" width="174" height="96" rx="6"/>
+  <text class="text" x="964" y="362">Merge</text>
+  <text class="small" x="964" y="384">승인 후 main에 병합</text>
+  <text class="small" x="964" y="404">담당자 입장: pull 작업</text>
+  <rect class="box note" x="938" y="506" width="174" height="104" rx="6"/>
+  <text class="small" x="960" y="538">검토 결과에 따라</text>
+  <text class="small" x="960" y="560">수정 요청 또는</text>
+  <text class="small" x="960" y="582">병합 처리한다.</text>
+
+  <path class="arrow" d="M262 218 C295 218, 320 218, 358 218"/>
+  <path class="arrow" d="M262 324 C295 324, 320 324, 358 324"/>
+  <path class="arrow" d="M262 430 C295 430, 320 430, 358 430"/>
+
+  <path class="arrow" d="M552 218 C585 218, 610 218, 648 218"/>
+  <path class="arrow" d="M552 324 C585 324, 610 324, 648 324"/>
+  <path class="arrow" d="M552 430 C585 430, 610 430, 648 430"/>
+  <path class="arrow" d="M455 530 L455 490"/>
+
+  <path class="arrow-blue" d="M842 218 C874 218, 898 218, 938 236"/>
+  <path class="arrow-blue" d="M842 324 C874 324, 898 324, 938 252"/>
+  <path class="arrow-blue" d="M842 430 C880 430, 902 405, 938 378"/>
+  <path class="arrow" d="M1025 284 L1025 330"/>
+
+  <rect class="box note" x="330" y="712" width="520" height="34" rx="6"/>
+  <text class="small" x="350" y="734">권장 흐름: Issue 생성 -> feature branch 작업 -> commit/test -> push -> PR 생성 -> review -> merge to main</text>
+</svg>
