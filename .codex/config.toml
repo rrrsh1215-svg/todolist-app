@@ -24,6 +24,12 @@ approval_mode = "approve"
 [mcp_servers.playwright.tools.browser_run_code_unsafe]
 approval_mode = "approve"
 
+[mcp_servers.playwright.tools.browser_navigate]
+approval_mode = "approve"
+
+[mcp_servers.playwright.tools.browser_resize]
+approval_mode = "approve"
+
 [mcp_servers.chrome-devtools]
 command = "npx"
 args = ["-y", "chrome-devtools-mcp@latest"]
@@ -50,6 +56,9 @@ approval_mode = "approve"
 type = "http"
 url = "https://mcp.supabase.com/mcp"
 
+[mcp_servers.supabase.tools.apply_migration]
+approval_mode = "approve"
+
 [mcp_servers.postgresql-mcp]
 command = "npx"
 args = ["-y", "@henkey/postgres-mcp-server"]
@@ -58,4 +67,7 @@ args = ["-y", "@henkey/postgres-mcp-server"]
 approval_mode = "approve"
 
 [mcp_servers.postgresql-mcp.tools.pg_analyze_database]
+approval_mode = "approve"
+
+[mcp_servers.postgresql-mcp.tools.pg_execute_query]
 approval_mode = "approve"

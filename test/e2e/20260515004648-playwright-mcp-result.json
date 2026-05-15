@@ -1,0 +1,114 @@
+{
+  "runId": "20260515004648",
+  "sourceDocument": "docs/3-user-scenario.md",
+  "tool": "playwright-mcp",
+  "baseUrls": {
+    "frontend": "http://127.0.0.1:5173",
+    "backend": "http://127.0.0.1:3000"
+  },
+  "summary": {
+    "status": "PASS",
+    "totalSteps": 8,
+    "passedSteps": 8,
+    "failedSteps": 0,
+    "failedApiEvents": 0,
+    "consoleErrors": 0
+  },
+  "testData": {
+    "email": "e2e-20260515004648@example.com",
+    "displayName": "E2E User 20260515004648",
+    "categoryName": "E2E Clear Category 20260515004648",
+    "todoTitle": "E2E Clear Todo 20260515004648",
+    "dueDate": "2026-05-15"
+  },
+  "scenarioCoverage": [
+    {
+      "scenario": "SC-003/3.1 회원가입 입력 및 제출",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-01-signup-form-filled.png",
+        "20260515004648-02-signup-success-login-page.png"
+      ]
+    },
+    {
+      "scenario": "SC-001/3.1 로그인 후 목록 진입",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-03-login-form-filled.png",
+        "20260515004648-04-todo-list-after-login.png"
+      ]
+    },
+    {
+      "scenario": "SC-004 프로필 다크모드/언어 저장",
+      "status": "PASS",
+      "details": {
+        "theme": "dark",
+        "language": "en"
+      },
+      "evidence": [
+        "20260515004648-05-profile-preferences-filled.png",
+        "20260515004648-06-profile-preferences-saved.png"
+      ]
+    },
+    {
+      "scenario": "SC-003 사용자 카테고리 생성",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-07-new-todo-empty-form.png",
+        "20260515004648-08-category-form-filled.png",
+        "20260515004648-09-category-created-visible-in-select.png"
+      ]
+    },
+    {
+      "scenario": "SC-003/3.2 할 일 등록",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-10-todo-form-filled-before-save.png",
+        "20260515004648-11-todo-created-on-list.png"
+      ]
+    },
+    {
+      "scenario": "SC-001/3.3 registered 상태 필터 조회",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-12-filter-registered-result.png"
+      ]
+    },
+    {
+      "scenario": "SC-002/3.4 상세 화면에서 completed 상태 변경",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-13-edit-todo-before-status-change.png",
+        "20260515004648-14-edit-todo-status-completed-selected.png",
+        "20260515004648-15-filter-completed-result.png"
+      ]
+    },
+    {
+      "scenario": "SC-005 테스트 계정 탈퇴",
+      "status": "PASS",
+      "evidence": [
+        "20260515004648-16-profile-before-account-delete.png",
+        "20260515004648-17-account-delete-confirmation.png",
+        "20260515004648-18-account-deleted-login-page.png"
+      ]
+    }
+  ],
+  "apiEvents": [
+    { "method": "POST", "url": "http://localhost:3000/api/auth/signup", "status": 201 },
+    { "method": "POST", "url": "http://localhost:3000/api/auth/login", "status": 200 },
+    { "method": "GET", "url": "http://localhost:3000/api/categories", "status": 200 },
+    { "method": "GET", "url": "http://localhost:3000/api/todos", "status": 200 },
+    { "method": "GET", "url": "http://localhost:3000/api/users/me", "status": 200 },
+    { "method": "PATCH", "url": "http://localhost:3000/api/users/me", "status": 200 },
+    { "method": "POST", "url": "http://localhost:3000/api/categories", "status": 201 },
+    { "method": "POST", "url": "http://localhost:3000/api/todos", "status": 201 },
+    { "method": "GET", "url": "http://localhost:3000/api/todos?status=registered", "status": 200 },
+    { "method": "PATCH", "url": "http://localhost:3000/api/todos/127afb86-5bda-4022-a5b4-7403db38b1dd", "status": 200 },
+    { "method": "GET", "url": "http://localhost:3000/api/todos?status=completed", "status": 200 },
+    { "method": "DELETE", "url": "http://localhost:3000/api/users/me", "status": 204 }
+  ],
+  "notes": [
+    "This rerun used a 1440x1100 viewport and captured before/after states for clearer evidence.",
+    "The final test account was deleted through the UI."
+  ]
+}
